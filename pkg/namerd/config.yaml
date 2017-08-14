@@ -1,0 +1,35 @@
+# namerd config for use with linkerd
+# http interface (for dtab api) on port 4180
+# gRPC interface (for linkerd) on port 4321
+
+admin:
+  port: 9991
+
+telemetry:
+  - kind: io.l5d.prometheus
+
+storage:
+  kind: io.l5d.zk
+  zkAddrs:
+  - host: leader.mesos
+    port: 2181
+  pathPrefix: /dtabs
+  sessionTimeoutMs: 10000
+
+namers:
+  - kind: io.l5d.marathon
+    host: marathon.mesos
+    port: 8080
+    prefix: /io.l5d.marathon
+
+interfaces:
+  - kind: io.l5d.mesh
+    ip:   0.0.0.0
+    port: 4321
+  - kind: io.l5d.httpController
+    ip:   0.0.0.0
+    port: 4180
+  - kind: io.l5d.thriftNameInterpreter
+    ip:   0.0.0.0
+    port: 4100
+

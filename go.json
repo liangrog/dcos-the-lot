@@ -1,0 +1,16 @@
+{
+  "id": "/poc/go",
+  "cpus": 0.5,
+  "mem": 64.0,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "golang",
+      "network": "BRIDGE",
+      "portMappings": [
+        { "containerPort": 0, "hostPort": 0, "protocol": "tcp" }
+      ]
+    }
+  }
+}

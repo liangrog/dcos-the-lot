@@ -1,0 +1,4 @@
+/marathonId=>/#/io.l5d.marathon;
+/marathonId/helloworld.Greeter=>/marathonId/greeter-server;
+/svc=>/$/io.buoyant.http.domainToPathPfx/marathonId;
+/grpc=>/marathonId;

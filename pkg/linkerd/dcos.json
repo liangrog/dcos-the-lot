@@ -1,0 +1,52 @@
+{
+  "id": "linkerd",
+  "instances": 6,
+  "cpus": 0.25,
+  "mem": 256.0,
+  "acceptedResourceRoles": ["*", "slave_public"],
+  "constraints": [["hostname", "UNIQUE"]],
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "buoyantio/linkerd:1.1.2",
+      "network": "HOST",
+      "privileged": true
+    }
+  },
+  "healthChecks": [
+    {
+      "protocol": "HTTP",
+      "portIndex": 0,
+      "path": "/admin/ping"
+    }
+  ],
+  "portDefinitions": [
+    {
+      "port": 9990,
+      "protocol": "tcp",
+      "name": "admin"
+    },
+    {
+      "port": 4140,
+      "protocol": "tcp",
+      "name": "outgoing"
+    },
+    {
+      "port": 4141,
+      "protocol": "tcp",
+      "name": "incoming"
+    },
+    {
+      "port": 4142,
+      "protocol": "tcp",
+      "name": "grpc-outgoing"
+    },  
+    {
+      "port": 4143,
+      "protocol": "tcp",
+      "name": "grpc-incoming"
+    }  
+  ],
+  "requirePorts": true,
+  "cmd": "echo \"{\\\"admin\\\":{\\\"port\\\":9990},\\\"telemetry\\\":[{\\\"kind\\\":\\\"io.l5d.prometheus\\\"}],\\\"routers\\\":[{\\\"protocol\\\":\\\"http\\\",\\\"servers\\\":[{\\\"port\\\":4140,\\\"ip\\\":\\\"0.0.0.0\\\"}],\\\"label\\\":\\\"outgoing\\\",\\\"interpreter\\\":{\\\"kind\\\":\\\"io.l5d.namerd.http\\\",\\\"experimental\\\":true,\\\"dst\\\":\\\"/$/inet/namerd.marathon.mesos/4180\\\",\\\"transformers\\\":[{\\\"kind\\\":\\\"io.l5d.port\\\",\\\"port\\\":4141}]}},{\\\"protocol\\\":\\\"http\\\",\\\"servers\\\":[{\\\"port\\\":4141,\\\"ip\\\":\\\"0.0.0.0\\\"}],\\\"label\\\":\\\"incoming\\\",\\\"interpreter\\\":{\\\"kind\\\":\\\"io.l5d.namerd.http\\\",\\\"experimental\\\":true,\\\"dst\\\":\\\"/$/inet/namerd.marathon.mesos/4180\\\",\\\"transformers\\\":[{\\\"kind\\\":\\\"io.l5d.localhost\\\"}]}},{\\\"protocol\\\":\\\"h2\\\",\\\"label\\\":\\\"grpc-outgoing\\\",\\\"experimental\\\":true,\\\"interpreter\\\":{\\\"kind\\\":\\\"io.l5d.mesh\\\",\\\"experimental\\\":true,\\\"dst\\\":\\\"/$/inet/namerd.marathon.mesos/4321\\\",\\\"transformers\\\":[{\\\"kind\\\":\\\"io.l5d.port\\\",\\\"port\\\":4143}]},\\\"servers\\\":[{\\\"port\\\":4142,\\\"ip\\\":\\\"0.0.0.0\\\"}],\\\"dstPrefix\\\":\\\"/grpc\\\",\\\"identifier\\\":{\\\"kind\\\":\\\"io.l5d.header.path\\\"}},{\\\"protocol\\\":\\\"h2\\\",\\\"label\\\":\\\"grpc-incoming\\\",\\\"experimental\\\":true,\\\"interpreter\\\":{\\\"kind\\\":\\\"io.l5d.mesh\\\",\\\"experimental\\\":true,\\\"dst\\\":\\\"/$/inet/namerd.marathon.mesos/4321\\\",\\\"transformers\\\":[{\\\"kind\\\":\\\"io.l5d.localhost\\\"}]},\\\"servers\\\":[{\\\"port\\\":4143,\\\"ip\\\":\\\"0.0.0.0\\\"}],\\\"dstPrefix\\\":\\\"/grpc\\\",\\\"identifier\\\":{\\\"kind\\\":\\\"io.l5d.header.path\\\"}}]}\" | /io.buoyant/linkerd/1.1.2/bundle-exec -log.level=DEBUG -com.twitter.finagle.tracing.debugTrace=true -- -"
+}

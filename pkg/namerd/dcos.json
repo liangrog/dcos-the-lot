@@ -1,0 +1,48 @@
+{
+  "id": "namerd",
+  "instances": 2,
+  "cpus": 0.25,
+  "mem": 256.0,
+  "acceptedResourceRoles": ["slave_public", "*"],
+  "constraints": [["hostname", "UNIQUE"]],
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "buoyantio/namerd:1.1.2-dcos",
+      "network": "HOST",
+      "privileged": true,
+      "forcePullImage": true
+    }
+  },
+  "healthChecks": [
+    {
+      "protocol": "HTTP",
+      "portIndex": 0,
+      "path": "/admin/ping"
+    }
+  ],
+  "portDefinitions": [
+    {
+      "port": 9991,
+      "protocol": "tcp",
+      "name": "admin"
+    },
+    {
+      "port": 4180,
+      "protocol": "tcp",
+      "name": "http"
+    },
+    {
+      "port": 4100,
+      "protocol": "tcp",
+      "name": "grpc-thrift"
+    },
+    {
+      "port": 4321,
+      "protocol": "tcp",
+      "name": "grpc-mesh"
+    }
+  ],
+  "requirePorts": true,
+  "cmd": "echo \"{\\\"admin\\\":{\\\"port\\\":9991},\\\"telemetry\\\":[{\\\"kind\\\":\\\"io.l5d.prometheus\\\"}],\\\"storage\\\":{\\\"kind\\\":\\\"io.l5d.zk\\\",\\\"zkAddrs\\\":[{\\\"host\\\":\\\"leader.mesos\\\",\\\"port\\\":2181}],\\\"pathPrefix\\\":\\\"/dtabs\\\",\\\"sessionTimeoutMs\\\":10000},\\\"namers\\\":[{\\\"kind\\\":\\\"io.l5d.marathon\\\",\\\"host\\\":\\\"marathon.mesos\\\",\\\"port\\\":8080,\\\"prefix\\\":\\\"/io.l5d.marathon\\\"}],\\\"interfaces\\\":[{\\\"kind\\\":\\\"io.l5d.mesh\\\",\\\"ip\\\":\\\"0.0.0.0\\\",\\\"port\\\":4321},{\\\"kind\\\":\\\"io.l5d.httpController\\\",\\\"ip\\\":\\\"0.0.0.0\\\",\\\"port\\\":4180},{\\\"kind\\\":\\\"io.l5d.thriftNameInterpreter\\\",\\\"ip\\\":\\\"0.0.0.0\\\",\\\"port\\\":4100}]}\" | /io.buoyant/namerd/1.1.2/dcos-exec -log.level=DEBUG -com.twitter.finagle.tracing.debugTrace=true -- -"
+}

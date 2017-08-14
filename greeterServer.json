@@ -1,0 +1,12 @@
+{
+  "id": "helloworld.Greeter",
+  "cmd": "chmod u+x greeterServer && ./greeterServer -addr=:$PORT0",
+  "cpus": 0.5,
+  "mem": 64.0,
+  "instances": 1,
+  "fetch": [
+      {
+          "uri": "https://s3-ap-southeast-2.amazonaws.com/assets.dcos.merlingroup.co/poc/greeterServer"
+      }
+  ]
+}

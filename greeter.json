@@ -1,0 +1,12 @@
+{
+  "id": "greeter",
+  "cmd": "chmod u+x greeter && ./greeter --addr=$HOST:4142",
+  "cpus": 0.5,
+  "mem": 64.0,
+  "instances": 1,
+  "fetch": [
+      {
+          "uri": "https://s3-ap-southeast-2.amazonaws.com/assets.dcos.merlingroup.co/poc/greeter"
+      }
+  ]
+}
